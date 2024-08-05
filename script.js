@@ -6,6 +6,7 @@ let correctWords = 0;
 let mistakesInCurrentWord = 0;
 let timerInterval;
 let elapsedTime = 0;
+let isStarted = false;
 
 const wordElement = document.querySelector('.word');
 const correctCountElement = document.querySelector('.correct-count');
@@ -60,12 +61,14 @@ function formatTime(totalSeconds) {
 document.addEventListener('keydown', event => {
     const typedLetter = event.key;
 
-    if (currentIndex === 0) {
+    if (!isStarted) {
+        isStarted = true;
         startTimer();
     }
 
     if (typedLetter === currentWord[currentIndex]) {
         const spans = wordElement.querySelectorAll('span');
+        spans[currentIndex].classList.remove('w');
         spans[currentIndex].classList.add('c');
         currentIndex++;
 
@@ -88,6 +91,7 @@ document.addEventListener('keydown', event => {
 
 function resetGame() {
     clearInterval(timerInterval);
+    isStarted = false;
     correctWords = 0;
     mistakesInCurrentWord = 0;
     elapsedTime = 0;
