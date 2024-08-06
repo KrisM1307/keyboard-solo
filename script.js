@@ -4,14 +4,17 @@ let currentWord = '';
 let currentIndex = 0;
 let correctWords = 0;
 let mistakesInCurrentWord = 0;
+let allMistakes = 0;
 let timerInterval;
 let elapsedTime = 0;
 let isStarted = false;
+let completedWords = 0;
 
 const wordElement = document.querySelector('.word');
 const correctCountElement = document.querySelector('.correct-count');
 const mistakesElement = document.querySelector('.word-mistakes');
 const timerElement = document.getElementById('timer');
+const wrongCount = document.querySelector('.wrong-count');
 
 function getRandomWord() {
     const randomWord = Math.floor(Math.random() * words.length);
@@ -31,11 +34,19 @@ function updateWord() {
         wordElement.append(span);
     }
 
-    updateMistakesCounter();
+    mistakesElement.textContent = mistakesInCurrentWord;
+    checkEndGame();
 }
 
-function updateMistakesCounter() {
-    mistakesElement.textContent = mistakesInCurrentWord;
+function checkEndGame() {
+    if (completedWords === 5) {
+        if (correctWords === 5) {
+            alert(`Победа! Ваше время: ${formatTime(elapsedTime)}`);
+        } else {
+            alert('Поражение :( Попробуйте ещё раз!');
+        }
+        resetGame();
+    }
 }
 
 function startTimer() {
@@ -73,13 +84,15 @@ document.addEventListener('keydown', event => {
         currentIndex++;
 
         if (currentIndex === currentWord.length) {
-            correctWords++;
-            correctCountElement.textContent = correctWords;
-            updateWord();
-            if (correctWords === 5) {
-                alert(`Победа! Ваше время: ${formatTime(elapsedTime)}`);
-                resetGame();
+            if (mistakesInCurrentWord >= 1) {
+                allMistakes++;
+                wrongCount.textContent = allMistakes;
+            } else {
+                correctWords++;
             }
+            correctCountElement.textContent = correctWords;
+            completedWords++;
+            updateWord();
         }
     } else {
         mistakesInCurrentWord++;
@@ -94,10 +107,13 @@ function resetGame() {
     isStarted = false;
     correctWords = 0;
     mistakesInCurrentWord = 0;
+    allMistakes = 0;
+    completedWords = 0;
     elapsedTime = 0;
     updateWord();
     correctCountElement.textContent = correctWords;
     mistakesElement.textContent = mistakesInCurrentWord;
+    wrongCount.textContent = allMistakes;
     timerElement.textContent = '00:00';
 }
 
