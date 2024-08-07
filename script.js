@@ -8,7 +8,6 @@ let allMistakes = 0;
 let timerInterval;
 let elapsedTime = 0;
 let isStarted = false;
-let completedWords = 0;
 
 const wordElement = document.querySelector('.word');
 const correctCountElement = document.querySelector('.correct-count');
@@ -39,14 +38,15 @@ function updateWord() {
 }
 
 function checkEndGame() {
-    if (completedWords === 5) {
-        if (correctWords === 5) {
-            alert(`Победа! Ваше время: ${formatTime(elapsedTime)}`);
-        } else {
-            alert('Поражение :( Попробуйте ещё раз!');
-        }
+    if (correctWords === 5) {
+        alert(`Победа! Ваше время: ${formatTime(elapsedTime)}`);
         resetGame();
-    }
+    };
+
+    if (allMistakes >= 5) {
+        alert('Поражение :( Попробуйте ещё раз!');
+        resetGame();
+    };
 }
 
 function startTimer() {
@@ -91,8 +91,7 @@ document.addEventListener('keydown', event => {
                 correctWords++;
             }
             correctCountElement.textContent = correctWords;
-            completedWords++;
-            updateWord();
+            setTimeout(updateWord, 0);
         }
     } else {
         mistakesInCurrentWord++;
@@ -108,7 +107,6 @@ function resetGame() {
     correctWords = 0;
     mistakesInCurrentWord = 0;
     allMistakes = 0;
-    completedWords = 0;
     elapsedTime = 0;
     updateWord();
     correctCountElement.textContent = correctWords;
